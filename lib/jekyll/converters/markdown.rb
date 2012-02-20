@@ -88,7 +88,12 @@ module Jekyll
       setup
       case @config['markdown']
         when 'redcarpet'
-          RedcarpetCompat.new(content, *@redcarpet_extensions).to_html
+          html = RedcarpetCompat.new(content, *@redcarpet_extensions).to_html
+          if @redcarpet_extensions.include?(:smart)
+            Redcarpet::Render::SmartyPants.render(html)
+          else
+            html
+          end
         when 'kramdown'
           # Check for use of coderay
           if @config['kramdown']['use_coderay']
